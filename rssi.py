@@ -19,7 +19,7 @@ Glucose = st.number_input("Glucose(mmol/L)")
 SBP = st.number_input("SBP(mmHg)")
 NLR = st.number_input("NLR(Neutrophil-to-Lymphocyte Ratio)")
 SHR = st.number_input("SHR(stress-induced hyperglycemia ratio)")
-LDL-C = st.number_input("LDL-C(mmol/L)")
+LDL = st.number_input("LDL-C(mmol/L)")
 NIHSS = st.number_input("NIHSS score on admission")
 
 # Dropdown input
@@ -31,9 +31,9 @@ if st.button("Submit"):
     # Unpickle classifier
     clf = joblib.load("catboost.pkl")
     # Store inputs into dataframe
-    X = pd.DataFrame([[Age,Glucose,SBP,NLR,SHR,LDL-C,NIHSS,pRSSI]],
+    X = pd.DataFrame([[Age,Glucose,SBP,NLR,SHR,LDL,NIHSS,pRSSI]],
                      columns=["Age", "Glucose","SBP",
-                       "NLR","SHR","LDL-C","NIHSS","pRSSI"])
+                       "NLR","SHR","LDL","NIHSS","pRSSI"])
     X = X.replace(["Yes", "No"], [1, 0])
     
     # Get prediction
@@ -55,6 +55,7 @@ if st.button("Submit"):
     else:
 
         st.text(f"This patient has a higher probability for 3-month good functional outcomes")
+
 
 
 
