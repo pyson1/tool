@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ---------------- Styles (green theme, no blue) ----------------
+# ---------------- Styles (green theme) ----------------
 st.markdown("""
 <style>
 .stApp { background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); }
@@ -23,7 +23,6 @@ st.markdown("""
   margin: 14px 0 22px 0; display:flex; align-items:center; gap:12px;
 }
 .app-title { font-size: 20px; font-weight: 800; letter-spacing:.2px; }
-.app-sub { opacity:.95; font-size: 13px; }
 
 /* Card */
 .card {
@@ -31,7 +30,6 @@ st.markdown("""
   box-shadow: 0 12px 28px rgba(16,24,40,.06); padding:18px;
 }
 .card-title { font-weight: 700; font-size: 16px; color:#1f2937; margin-bottom:6px; }
-.help { color:#6b7280; font-size: 12.5px; margin: -4px 0 10px 0; }
 
 /* Button (emerald) */
 div.stButton > button:first-child{
@@ -45,32 +43,26 @@ div.stButton > button:first-child:hover{ filter:brightness(.95); transform: tran
 div.stButton > button:first-child:active{ transform: translateY(0); }
 
 /* Result styles */
-.result-good { border-left:6px solid #10b981; padding-left:12px; }
-.result-bad  { border-left:6px solid #ef4444; padding-left:12px; }
-.result-title{ font-size:16px; font-weight:800; margin-bottom:6px;}
-.result-body { font-size:14px; color:#374151; }
+.result-good { border-left:6px solid #10b981; padding-left:12px; font-weight:800; color:#065f46; }
+.result-bad  { border-left:6px solid #ef4444; padding-left:12px; font-weight:800; color:#991b1b; }
 
 /* Slightly larger labels */
 label { font-size: 15px !important; }
 </style>
-""", unsafe_allow_html=True)  # ← 这里必须完整
+""", unsafe_allow_html=True)
 
 # ---------------- Header ----------------
 st.markdown('<div class="main-wrap">', unsafe_allow_html=True)
 st.markdown("""
 <div class="appbar">
   <span style="font-size:22px">🧠</span>
-  <div>
-    <div class="app-title">Prediction Tool for 3-Month Functional Outcomes in RSSI Patients</div>
-    <div class="app-sub">Fill the inputs below and click <b>Submit</b> at the bottom.</div>
-  </div>
+  <div class="app-title">Prediction Tool for 3-Month Functional Outcomes in RSSI Patients</div>
 </div>
 """, unsafe_allow_html=True)
 
 # ---------------- Form (two columns) ----------------
 st.markdown('<div class="card">', unsafe_allow_html=True)
 st.markdown('<div class="card-title">Patient Inputs</div>', unsafe_allow_html=True)
-st.markdown('<div class="help">Note: feature order must match training.</div>', unsafe_allow_html=True)
 
 # 特征顺序需与训练一致：Age, SBP, NIHSS, Glucose, LDL, SHR, NLR, pRSSI
 c1, c2 = st.columns(2)
@@ -106,33 +98,18 @@ st.markdown('<div class="card-title">Prediction</div>', unsafe_allow_html=True)
 
 if submitted:
     try:
-        clf = joblib.load("Model.pkl")  # 你的已训练模型/管道
+        clf = joblib.load("Model.pkl")
         X = pd.DataFrame(
             [[Age, SBP, NIHSS, Glucose, LDL, SHR, NLR, pRSSI]],
             columns=["Age","SBP","NIHSS","Glucose","LDL","SHR","NLR","pRSSI"]
         ).replace(["Yes","No"], [1,0])
 
-        with st.spinner("Running inference..."):
-            pred = int(clf.predict(X)[0])
-            prob = None
-            if hasattr(clf, "predict_proba"):
-                try:
-                    prob = float(clf.predict_proba(X)[0,1])
-                except Exception:
-                    prob = None
+        pred = int(clf.predict(X)[0])
 
         if pred == 0:
-            st.markdown('<div class="result-good">', unsafe_allow_html=True)
-            st.markdown('<div class="result-title">✅ Higher probability of <u>GOOD</u> 3-month functional outcome</div>', unsafe_allow_html=True)
-            if prob is not None:
-                st.markdown(f'<div class="result-body">Model confidence (poor outcome probability): <b>{prob:.2f}</b></div>', unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown('<div class="result-good">✅ Higher probability of GOOD 3-month outcome</div>', unsafe_allow_html=True)
         else:
-            st.markdown('<div class="result-bad">', unsafe_allow_html=True)
-            st.markdown('<div class="result-title">⚠️ Higher probability of <u>POOR</u> 3-month functional outcome</div>', unsafe_allow_html=True)
-            if prob is not None:
-                st.markdown(f'<div class="result-body">Model confidence (poor outcome probability): <b>{prob:.2f}</b></div>', unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown('<div class="result-bad">⚠️ Higher probability of POOR 3-month outcome</div>', unsafe_allow_html=True)
 
     except Exception as e:
         st.error("Failed to load `Model.pkl` or run prediction. Ensure the file exists and the feature order matches training.")
@@ -140,4 +117,4 @@ if submitted:
 else:
     st.info("Set inputs above and click **Submit**.")
 
-st.markdown('</div>', unsafe_allow_html=True)  # 关闭 .main-wrap
+st.markdown('</div>', unsafe_allow_html=True)
