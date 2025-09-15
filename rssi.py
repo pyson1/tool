@@ -29,7 +29,7 @@ pRSSI = st.selectbox("pRSSI(proximal recent single subcortical infarct)", ("Yes"
 
 if st.button("Submit"):
     # Unpickle classifier
-    clf = joblib.load("model.pkl")
+    clf = joblib.load("Model.pkl")
     # Store inputs into dataframe
     X = pd.DataFrame([[Age,Glucose,SBP,NLR,SHR,LDL,NIHSS,pRSSI]],
                      columns=["Age", "Glucose","SBP",
@@ -55,6 +55,7 @@ if st.button("Submit"):
     else:
 
         st.text(f"This patient has a higher probability for 3-month poor functional outcomes")
+
 
 
 
