@@ -31,9 +31,9 @@ if st.button("Submit"):
     # Unpickle classifier
     clf = joblib.load("Model.pkl")
     # Store inputs into dataframe
-    X = pd.DataFrame([[Age,Glucose,SBP,NLR,SHR,LDL,NIHSS,pRSSI]],
-                     columns=["Age", "Glucose","SBP",
-                       "NLR","SHR","LDL","NIHSS","pRSSI"])
+    X = pd.DataFrame([[Age,SBP,NIHSS,Glucose,LDL,SHR,NLR,pRSSI]],
+                     columns=["Age", "SBP","NIHSS","Glucose","LDL","SHR",
+                       "NLR","pRSSI"])
     X = X.replace(["Yes", "No"], [1, 0])
     
     # Get prediction
@@ -55,6 +55,7 @@ if st.button("Submit"):
     else:
 
         st.text(f"This patient has a higher probability for 3-month poor functional outcomes")
+
 
 
 
