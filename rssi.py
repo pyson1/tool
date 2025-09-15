@@ -50,11 +50,12 @@ if st.button("Submit"):
     # st_shap(shap.plots.waterfall(shap_values[0]), height=300)
     # st_shap(shap.plots.beeswarm(shap_values), height=300)
     #st_shap(shap.force_plot(explainer.expected_value, shap_values[0, :],X.iloc[0, :]), height=200, width=700)
-    if prediction == 1:
-        st.text(f"This patient has a higher probability for 3-month poor functional outcomes")
+    if prediction == 0:
+        st.text(f"This patient has a higher probability for 3-month good functional outcomes")
     else:
 
-        st.text(f"This patient has a higher probability for 3-month good functional outcomes")
+        st.text(f"This patient has a higher probability for 3-month poor functional outcomes")
+
 
 
 
