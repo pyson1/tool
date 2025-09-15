@@ -1,5 +1,5 @@
 import streamlit as st
-import shap
+
 from streamlit_shap import st_shap
 import pandas as pd
 import joblib
@@ -55,3 +55,4 @@ if st.button("Submit"):
     else:
 
         st.text(f"This patient has a higher probability for 3-month good functional outcomes")
+
